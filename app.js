@@ -10,26 +10,20 @@ async function generate() {
   console.log("\t CLIENT AUTHENTICATION TOKEN GENERATION")
   console.log("------------------------------------------------------------")
 
-  let client = ["dog", "ui"]
-  let data = {}
-  console.log("Select Your Client Type from the given options below : ")
-  client.forEach((e, i) => {
-    console.log(`${i + 1}. ${e}`)
-  })
-  data.clientType = client[readlineSync.questionInt() - 1]
-  while (!data.clientType)
-    data.clientType = client[readlineSync.questionInt("Invalid Option. Choose again : ") - 1]
+  let data = {clientType : "dog"}  
 
   data.macA = readlineSync.question("Enter your MAC Address: ")
-  while (!data.macA)
-    data.macA = readlineSync.questionInt("Invalid Option. Enter again : ")
+  let regexp = /^[0-9a-f]{2}(:[0-9a-f]{2}){5}$/i;
 
+  while (!data.macA || !regexp.test(data.macA))
+  data.macA = readlineSync.questionInt("Invalid MAC Address. Enter again : ")
+  
   console.log("Generating Token .... ")
   token = await getToken()
 
   async function getToken() {
     try {
-      let res = await axios.post("http://34.130.85.166:8000/genTok", data)
+      let res = await axios.post("http://192.168.0.155:8003/genTok", data)
       console.log("\nToken generated successfully!\n")
       return res.data
     } catch (err) {
@@ -50,7 +44,7 @@ for (let key in nI) {
     break;
   }
 }
-const socket = io("http://34.130.85.166:8000/");
+const socket = io("http://192.168.0.155:8003/");
 
 socket.on("connect", async () => {
   console.log("I am connected to the socket server worker thread... Yayyyy!!");
